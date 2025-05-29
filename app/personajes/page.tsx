@@ -6,6 +6,7 @@ import { charactersTable, classesTable, racesTable, backgroundsTable } from "@/d
 import CharacterCard from "@/components/character-card"
 import { eq } from "drizzle-orm"
 
+export const dynamic = 'force-dynamic'
 
 export default async function CharactersPage() {
   const characters = await db.select({
