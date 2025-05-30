@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
 
-type Character = {
+export type Character = {
     name: string;
-    class: string;
-    race: string;
+    class: number;
+    race: number;
     level: number;
-    background: string;
-    alignment: string;
+    background: number;
+    alignment: number;
     experience: number;
     image: string;
     attributes: {
@@ -63,11 +63,11 @@ type CharacterStore = {
 export const useCharacterStore = create<CharacterStore>((set) => ({
     character: {
         name: '',
-        class: '',
-        race: '',
+        class: 0,
+        race: 0,
         level: 0,
-        background: '',
-        alignment: '',
+        background: 0,
+        alignment: 0,
         experience: 0,
         image: '',
         attributes: {
@@ -118,11 +118,11 @@ export const useCharacterStore = create<CharacterStore>((set) => ({
         set(() => ({
             character: {
                 name: '',
-                class: '',
-                race: '',
+                class: 0,
+                race: 0,
                 level: 0,
-                background: '',
-                alignment: '',
+                background: 0,
+                alignment: 0,
                 experience: 0,
                 image: '',
                 attributes: {

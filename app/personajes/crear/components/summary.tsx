@@ -36,17 +36,17 @@ const truncateText = (text: string, maxLength: number): string => {
 interface BasicInfoCardProps {
   name: string
   image: string
-  race: string
-  characterClass: string
-  background: string
-  alignment: string
+  race: number
+  characterClass: number
+  background: number
+  alignment: number
 }
 
 function BasicInfoCard({ name, image, race, characterClass, background, alignment }: BasicInfoCardProps) {
-  const raceData = useMemo(() => getRacesById(parseInt(race)), [race])
-  const classData = useMemo(() => getClassById(parseInt(characterClass)), [characterClass])
-  const backgroundData = useMemo(() => getBackgroundById(parseInt(background)), [background])
-  const alignmentData = useMemo(() => getAlignmentsById(parseInt(alignment)), [alignment])
+  const raceData = useMemo(() => getRacesById(race), [race])
+  const classData = useMemo(() => getClassById(characterClass), [characterClass])
+  const backgroundData = useMemo(() => getBackgroundById(background), [background])
+  const alignmentData = useMemo(() => getAlignmentsById(alignment), [alignment])
 
   return (
     <Card>
@@ -281,7 +281,7 @@ function FinalNotesCard() {
 }
 
 // Componente principal
-export function Resumen() {
+export function Summary() {
   const character = useCharacterStore((state) => state.character)
   const { name, image, race, class: characterClass, background, alignment, attributes, skills, equipment, history } = character
 

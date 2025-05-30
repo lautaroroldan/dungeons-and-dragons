@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { getCachedRaces, getCachedClasses, getCachedBackgrounds, getCachedAlignments } from '@/lib/server-actions'
+import { getCachedRaces, getCachedClasses, getCachedBackgrounds, getCachedAlignments } from '@/lib/actions'
 import { BasicTable } from '@/db/schema'
 
 interface UseStaticDataResult<T> {
