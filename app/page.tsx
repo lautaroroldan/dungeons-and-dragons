@@ -9,12 +9,9 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight lg:text-4xl">Crónicas de Faerûn</h1>
-          <p className="mt-2 text-muted-foreground">Gestiona tu campaña de D&D con facilidad</p>
-        </div>
-        <ThemeToggle />
+      <div className="flex flex-col gap-2 mb-6">
+        <h1 className="text-3xl font-extrabold tracking-tight lg:text-4xl">Crónicas de Faerûn</h1>
+        <p className="mt-2 text-muted-foreground">Gestiona tu campaña de D&D con facilidad</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -76,7 +73,7 @@ export default function HomePage() {
         <ul className="space-y-2 list-disc pl-5">
           <li>Sistema de combate para gestionar encuentros</li>
           <li>Biblioteca de hechizos y objetos mágicos</li>
-          <li>✅ Modo oscuro para sesiones nocturnas</li>
+          <li className="line-through">✅ Modo oscuro para sesiones nocturnas</li>
           <li>Edición de personajes existentes</li>
           <li>Mapa interactivo del mundo</li>
         </ul>

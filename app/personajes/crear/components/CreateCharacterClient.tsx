@@ -20,14 +20,6 @@ export function CreateCharacterClient() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="mb-6">
-                <Button asChild variant="ghost" className="gap-2">
-                    <Link href="/personajes">
-                        <ArrowLeft className="h-4 w-4" />
-                        Volver a todos los personajes
-                    </Link>
-                </Button>
-            </div>
 
             <form action={handleFormSubmit}>
                 <Card className="max-w-4xl mx-auto">
