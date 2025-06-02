@@ -1,4 +1,4 @@
-import { History, Skill, SpecialAbility, Equipment } from '@/app/stores/useCharacterStore';
+import { History, Skill, SpecialAbility, Equipment } from '@/stores/useCharacterStore';
 import { db } from '@/db';
 import { InsertCharacter, charactersTable, attributesTable, AttributesTable, equipmentTable, characterEquipmentTable, InsertEquipment, InsertCharacterEquipment, skillsTable, characterSkillsTable, InsertSkills, historyTable, characterSpecialAbilitiesTable } from '@/db/schema';
 

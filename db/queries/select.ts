@@ -1,31 +1,7 @@
+import "server-only"
 import { db } from "@/db";
 import { charactersTable, racesTable, classesTable, alignmentsTable, backgroundsTable, equipmentTable, characterEquipmentTable, attributesTable, skillsTable, historyTable, characterSpecialAbilitiesTable, characterSkillsTable } from "@/db/schema";
 import { eq, and } from 'drizzle-orm';
-
-export async function getCharacters() {
-    const characters = await db.select().from(charactersTable);
-    return characters;
-}
-
-export async function getRaces() {
-    const races = await db.select().from(racesTable);
-    return races;
-}
-
-export async function getClasses() {
-    const classes = await db.select().from(classesTable);
-    return classes;
-}
-
-export async function getBackgrounds() {
-    const backgrounds = await db.select().from(backgroundsTable);
-    return backgrounds;
-}
-
-export async function getAlignments() {
-    const alignments = await db.select().from(alignmentsTable);
-    return alignments;
-}
 
 // Obtener todo el equipamiento de un personaje
 export async function getCharacterEquipment(characterId: number) {
