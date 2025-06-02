@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dice6, RefreshCw } from "lucide-react"
 import { Slider } from "@/components/ui/slider"
-import { useCharacterStore } from "@/app/stores/useCharacterStore"
+import { useCharacterStore } from "@/stores/useCharacterStore"
 
 const AVAILABLE_POINTS = 27
 

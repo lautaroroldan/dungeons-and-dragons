@@ -1,7 +1,7 @@
-import { useCharacterStore } from "@/app/stores/useCharacterStore"
+import { useCharacterStore } from "@/stores/useCharacterStore"
 import { saveCharacter } from "@/lib/actions"
 import { useSteps } from "@/hooks/useSteps"
-import { TOTAL_STEPS } from "@/app/constants/formSteps"
+import { TOTAL_STEPS } from "@/constants/formSteps"
 
 export const useCharacterForm = () => {
     const { step, nextStep, previousStep, setStep } = useSteps(0, TOTAL_STEPS)

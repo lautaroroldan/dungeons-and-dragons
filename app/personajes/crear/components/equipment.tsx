@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Trash2, Shield, Sword, Package } from "lucide-react"
-import { Equipment, useCharacterStore } from "@/app/stores/useCharacterStore"
+import { Equipment, useCharacterStore } from "@/stores/useCharacterStore"
 import { useEquipmentManager } from "@/hooks/useEquipmentManager"
 
 // Tipos

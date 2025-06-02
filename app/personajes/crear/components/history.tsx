@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
-import { useCharacterStore, SpecialAbility } from "@/app/stores/useCharacterStore"
+import { useCharacterStore, SpecialAbility } from "@/stores/useCharacterStore"
 
 const ABILITY_TYPES = [
   { value: "racial", label: "Racial" },

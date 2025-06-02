@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ScrollText, Shield, Swords, BookOpen, Backpack } from "lucide-react"
-import { Equipment, SpecialAbility, useCharacterStore, Skill } from "@/app/stores/useCharacterStore"
+import { Equipment, SpecialAbility, useCharacterStore, Skill } from "@/stores/useCharacterStore"
 import { getAlignmentsById, getBackgroundById, getClassById, getRacesById } from "@/lib/utils"
 
 // Constantes

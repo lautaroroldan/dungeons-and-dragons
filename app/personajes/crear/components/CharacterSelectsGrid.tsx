@@ -1,7 +1,7 @@
 "use client"
 
 import { SmartSelect } from "@/components/select"
-import { useCharacterStore } from "@/app/stores/useCharacterStore"
+import { useCharacterStore } from "@/stores/useCharacterStore"
 
 interface SelectConfig {
     label: string
@@ -22,7 +22,7 @@ export function CharacterSelectsGrid() {
     const setCharacter = useCharacterStore((state) => state.setCharacter)
 
     const getValue = (key: SelectConfig['storeKey']) => {
-        return character[key]
+        return character[key].toString()
     }
 
     const handleValueChange = (key: SelectConfig['storeKey']) => (value: any) => {

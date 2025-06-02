@@ -1,4 +1,4 @@
-import { Equipment } from "@/app/stores/useCharacterStore"
+import { Equipment } from "@/stores/useCharacterStore"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EquipmentItem } from "./EquipmentItem"
 

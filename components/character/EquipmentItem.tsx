@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge"
-import { Equipment } from "@/app/stores/useCharacterStore"
+import { Equipment } from "@/stores/useCharacterStore"
 
 interface EquipmentItemProps {
     id: number
@@ -23,9 +23,6 @@ export function EquipmentItem({
             <div className="flex justify-between items-center py-2 border-b border-background last:border-0">
                 <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{equipment.name}</span>
-                    <Badge variant="outline" className="text-xs">
-                        {equipment.type}
-                    </Badge>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground">x{quantity}</span>
@@ -72,9 +69,6 @@ export function EquipmentItem({
                             Equipado
                         </Badge>
                     )}
-                    <Badge variant="outline" className="text-xs">
-                        {equipment.type}
-                    </Badge>
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Camera } from "lucide-react"
-import { useCharacterStore } from "@/app/stores/useCharacterStore"
+import { useCharacterStore } from "@/stores/useCharacterStore"
 
 export function CharacterAvatarUpload() {
     const image = useCharacterStore((state) => state.character.image)

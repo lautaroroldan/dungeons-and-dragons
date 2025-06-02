@@ -1,4 +1,4 @@
-import { Equipment, useCharacterStore } from "@/app/stores/useCharacterStore"
+import { Equipment, useCharacterStore } from "@/stores/useCharacterStore"
 import { useCallback, useMemo } from "react"
 
 export const useEquipmentManager = () => {

@@ -1,7 +1,7 @@
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FORM_STEPS, type FormStep } from "@/app/constants/formSteps"
+import { FORM_STEPS, type FormStep } from "@/constants/formSteps"
 
 interface FormTabsProps {
     currentStep: number

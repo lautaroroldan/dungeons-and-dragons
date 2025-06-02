@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useCharacterStore, Skill } from "@/app/stores/useCharacterStore"
+import { useCharacterStore, Skill } from "@/stores/useCharacterStore"
 import { EClass, getClassById } from "@/lib/utils"
 
 // Constantes
