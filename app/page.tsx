@@ -2,7 +2,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Users, ScrollText, MapIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeToggle } from "@/components/ThemeToggle"
 
 
 export default function HomePage() {
