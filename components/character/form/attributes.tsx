@@ -37,6 +37,7 @@ const AttributeItem = ({ attribute, form }: { attribute: string, form: UseFormRe
           <SliderForm
             name={`attributes.${attribute}` as keyof z.infer<typeof completeCharacterSchema>}
             control={form.control}
+            defaultValue={10}
             min={8}
             max={15}
             step={1}
@@ -68,7 +69,14 @@ export function Attributes({ form }: { form: UseFormReturn<z.infer<typeof comple
   }
 
   const resetAttributes = () => {
-    form.resetField("attributes")
+    form.setValue("attributes", {
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10
+    })
     setAvailablePoints(AVAILABLE_POINTS)
   }
 
