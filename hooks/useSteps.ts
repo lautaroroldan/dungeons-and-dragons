@@ -3,9 +3,8 @@ import { useState, useEffect } from "react"
 export const useSteps = (initialStep: number, maxSteps: number) => {
     const [step, setStep] = useState(initialStep)
 
-    useEffect(() => {
-        console.log(step)
-    }, [step])
+    const isLastStep = step === maxSteps - 1
+    const isFirstStep = step === 0
 
     const nextStep = () => {
         setStep((prev) => {
@@ -24,5 +23,5 @@ export const useSteps = (initialStep: number, maxSteps: number) => {
         })
     }
 
-    return { step, nextStep, previousStep, setStep }
+    return { step, nextStep, previousStep, setStep, isLastStep, isFirstStep }
 }
