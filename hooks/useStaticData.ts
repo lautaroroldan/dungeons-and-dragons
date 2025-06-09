@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { BasicTable } from '@/db/schema'
-import { getCachedRaces, getCachedClasses, getCachedBackgrounds, getCachedAlignments } from '@/db/queries/cached'
 interface UseStaticDataResult<T> {
     data: T[]
     loading: boolean
@@ -11,7 +10,7 @@ interface UseStaticDataResult<T> {
 }
 
 // Hook genérico para datos estáticos
-function useStaticData<T extends BasicTable>(
+export function useStaticData<T extends BasicTable>(
     fetcher: () => Promise<T[]>,
     key: string
 ): UseStaticDataResult<T> {
@@ -44,20 +43,3 @@ function useStaticData<T extends BasicTable>(
         refetch: fetchData
     }
 }
-
-// Hooks específicos para cada tipo de dato
-export function useRaces() {
-    return useStaticData(getCachedRaces, 'races')
-}
-
-export function useClasses() {
-    return useStaticData(getCachedClasses, 'classes')
-}
-
-export function useBackgrounds() {
-    return useStaticData(getCachedBackgrounds, 'backgrounds')
-}
-
-export function useAlignments() {
-    return useStaticData(getCachedAlignments, 'alignments')
-} 

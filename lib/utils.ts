@@ -143,3 +143,33 @@ export function getAlignmentsById(id: number) {
   return getAlignments().find((a) => a.id === id)
 }
 
+export async function getApiRaces() {
+  const response = await fetch("/api/races")
+  const data = await response.json()
+  return data
+}
+
+export async function getApiClasses() {
+  const response = await fetch("/api/classes")
+  const data = await response.json()
+  return data
+}
+
+export async function getApiBackgrounds() {
+  const response = await fetch("/api/backgrounds")
+  const data = await response.json()
+  return data
+}
+
+export async function getApiAlignments() {
+  const response = await fetch("/api/alignments")
+  const data = await response.json()
+  return data
+}
+
+export const calculateAttributeModifier = (value: number): number => Math.floor((value - 10) / 2)
+
+export const showAttributeModifier = (value: number): string => {
+  const mod = calculateAttributeModifier(value)
+  return mod >= 0 ? `+${mod}` : mod.toString()
+}

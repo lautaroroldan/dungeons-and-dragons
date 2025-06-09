@@ -1,54 +1,30 @@
 "use server"
 import { db } from "@/db"
 import { racesTable, classesTable, backgroundsTable, alignmentsTable } from "../schema"
-import { unstable_cache as cache } from "next/cache"
+import { unstable_cacheTag as cacheTag } from "next/cache"
 
-const CACHE_TIME = 60 * 60 * 24 // 24 horas
 
-export const getCachedRaces = cache(
-    async () => {
-        const result = await db.select().from(racesTable)
-        return result
-    },
-    ['races'], // cache key
-    {
-        revalidate: CACHE_TIME, // 24 horas
-        tags: ['races']
-    }
-)
+export const getCachedRaces = async () => {
+    "use cache"
+    cacheTag('races')
+    return await db.select().from(racesTable)
+}
 
-export const getCachedClasses = cache(
-    async () => {
-        const result = await db.select().from(classesTable)
-        return result
-    },
-    ['classes'],
-    {
-        revalidate: CACHE_TIME, // 24 horas
-        tags: ['classes']
-    }
-)
+export const getCachedClasses = async () => {
+    "use cache"
+    cacheTag('classes')
+    return await db.select().from(classesTable)
+}
 
-export const getCachedBackgrounds = cache(
-    async () => {
-        const result = await db.select().from(backgroundsTable)
-        return result
-    },
-    ['backgrounds'],
-    {
-        revalidate: CACHE_TIME, // 24 horas
-        tags: ['backgrounds']
-    }
-)
+export const getCachedBackgrounds = async () => {
+    "use cache"
+    cacheTag('backgrounds')
+    return await db.select().from(backgroundsTable)
+}
 
-export const getCachedAlignments = cache(
-    async () => {
-        const result = await db.select().from(alignmentsTable)
-        return result
-    },
-    ['alignments'],
-    {
-        revalidate: CACHE_TIME, // 24 horas
-        tags: ['alignments']
-    }
-)
+
+export const getCachedAlignments = async () => {
+    "use cache"
+    cacheTag('alignments')
+    return await db.select().from(alignmentsTable)
+}
