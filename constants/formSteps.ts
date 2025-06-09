@@ -1,15 +1,18 @@
 import { ComponentType } from "react"
 import { BasicInformationPanel } from "@/components/character/form/BasicInformationPanel"
-import { Attributes } from "@/app/personajes/crear/components/attributes"
-import { Skills } from "@/app/personajes/crear/components/skills"
-import { AddCharacterEquipment } from "@/app/personajes/crear/components/equipment"
-import { History } from "@/app/personajes/crear/components/history"
-import { Summary } from "@/app/personajes/crear/components/summary"
+import { Attributes } from "@/components/character/form/attributes"
+import { Skills } from "@/components/character/form/skills"
+import { AddCharacterEquipment } from "@/components/character/form/equipment"
+import { History } from "@/components/character/form/history"
+import { Summary } from "@/components/character/form/summary"
+import { completeCharacterSchema } from "@/lib/validations/character"
+import { UseFormReturn } from "react-hook-form"
+import { z } from "zod"
 
 export interface FormStep {
     id: number
     title: string
-    component: ComponentType
+    component: ComponentType<{ form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }>
 }
 
 export const FORM_STEPS: FormStep[] = [
