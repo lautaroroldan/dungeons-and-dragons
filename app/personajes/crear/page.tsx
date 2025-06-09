@@ -1,5 +1,5 @@
-import { CreateCharacterClient } from "./components/CreateCharacterClient"
+import { CreateCharacter } from "@/components/character/form/CreateCharacter"
 
 export default function CrearPersonajePage() {
-  return <CreateCharacterClient />
+  return <CreateCharacter />
 }
