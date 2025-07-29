@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     reactCompiler: true,
-    dynamicIO: true,
+    useCache: true,
+    // dynamicIO: true,
   },
 }
 
