@@ -1,12 +1,11 @@
 "use client"
 
 import { SelectForm } from "@/components/character/form/SelectForm"
-import { completeCharacterSchema } from "@/lib/validations/character"
+import { CompleteCharacterFormType, completeCharacterSchema } from "@/lib/validations/character"
 import { z } from "zod"
 import { UseFormReturn } from "react-hook-form"
 import { getApiRaces, getApiClasses, getApiBackgrounds, getApiAlignments } from "@/lib/utils"
 import { BasicTable } from "@/db/schema"
-import { Suspense } from "react"
 
 interface SelectConfig {
     id: string
@@ -21,8 +20,7 @@ const selectConfigs: SelectConfig[] = [
     { label: "Alineamiento", id: "alignment", url: getApiAlignments }
 ]
 
-export function CharacterSelectsGrid({ form }: { form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) {
-
+export function CharacterSelectsGrid({ form }: { form: UseFormReturn<CompleteCharacterFormType> }) {
 
 
     return (
@@ -30,15 +28,14 @@ export function CharacterSelectsGrid({ form }: { form: UseFormReturn<z.infer<typ
             {/* Raza y Clase */}
             <div className="grid grid-cols-2 gap-4">
                 {selectConfigs.slice(0, 2).map((config) => (
-                    <Suspense key={config.id} fallback={<div>Loading...</div>}>
-                        <SelectForm
-                            key={config.id}
-                            label={config.label}
-                            name={config.id as keyof z.infer<typeof completeCharacterSchema>}
-                            url={config.url}
-                            form={form}
-                        />
-                    </Suspense>
+                    <SelectForm
+                        key={config.id}
+                        label={config.label}
+                        name={config.id as keyof z.infer<typeof completeCharacterSchema>}
+                        fetcher={config.url}
+                        fetchKey={`api/${config.id}`}
+                        form={form}
+                    />
                 ))}
             </div>
 
@@ -49,7 +46,8 @@ export function CharacterSelectsGrid({ form }: { form: UseFormReturn<z.infer<typ
                         key={config.id}
                         label={config.label}
                         name={config.id as keyof z.infer<typeof completeCharacterSchema>}
-                        url={config.url}
+                        fetcher={config.url}
+                        fetchKey={`api/${config.id}`}
                         form={form}
                     />
                 ))}

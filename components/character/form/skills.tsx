@@ -1,43 +1,18 @@
 "use client"
 
-import { useMemo, useCallback } from "react"
+import { useMemo, useCallback, useEffect } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useCharacterStore, Skill } from "@/stores/useCharacterStore"
-import { EClass, getClassById } from "@/lib/utils"
-
-// Constantes
-const SKILL_ATTRIBUTE_MAP: Record<string, string> = {
-  Acrobacias: "dexterity",
-  Arcanos: "intelligence",
-  Atletismo: "strength",
-  Engaño: "charisma",
-  Historia: "intelligence",
-  Interpretación: "charisma",
-  Intimidación: "charisma",
-  Investigación: "intelligence",
-  "Juego de Manos": "dexterity",
-  Medicina: "wisdom",
-  Naturaleza: "intelligence",
-  Percepción: "wisdom",
-  Perspicacia: "wisdom",
-  Persuasión: "charisma",
-  Religión: "intelligence",
-  Sigilo: "dexterity",
-  Supervivencia: "wisdom",
-  "Trato con Animales": "wisdom",
-}
-
-const ATTRIBUTE_DISPLAY_NAMES = {
-  strength: "Fuerza",
-  dexterity: "Destreza",
-  constitution: "Constitución",
-  intelligence: "Inteligencia",
-  wisdom: "Sabiduría",
-  charisma: "Carisma"
-} as const
+import { calculateAttributeModifier, EClass, getClassById, showAttributeModifier } from "@/lib/utils"
+import { SKILL_ATTRIBUTE_MAP } from "@/constants/attributes"
+import { ATTRIBUTE_DISPLAY_NAMES } from "@/constants/attributes"
+import { FormControl, FormItem, FormField, FormLabel, FormDescription } from "@/components/ui/form"
+import { ControllerRenderProps, UseFormReturn, useWatch } from "react-hook-form"
+import { completeCharacterSchema } from "@/lib/validations/character"
+import { z } from "zod"
 
 const CLASS_PROFICIENCY_COUNT = {
   [EClass.ROUGH]: 4,
@@ -49,8 +24,25 @@ const CLASS_PROFICIENCY_COUNT = {
   [EClass.MONK]: 2,
 } as const
 
-// Utilidades
-const calculateAttributeModifier = (value: number): number => Math.floor((value - 10) / 2)
+const DefaultSkills = [
+  { name: "Arcanos", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Atletismo", value: 0, proficient: false, attribute: "strength" },
+  { name: "Engaño", value: 0, proficient: false, attribute: "charisma" },
+  { name: "Historia", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Interpretación", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Intimidación", value: 0, proficient: false, attribute: "charisma" },
+  { name: "Investigación", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Juego de Manos", value: 0, proficient: false, attribute: "dexterity" },
+  { name: "Medicina", value: 0, proficient: false, attribute: "wisdom" },
+  { name: "Naturaleza", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Percepción", value: 0, proficient: false, attribute: "wisdom" },
+  { name: "Perspicacia", value: 0, proficient: false, attribute: "wisdom" },
+  { name: "Persuasión", value: 0, proficient: false, attribute: "charisma" },
+  { name: "Religión", value: 0, proficient: false, attribute: "intelligence" },
+  { name: "Sigilo", value: 0, proficient: false, attribute: "dexterity" },
+  { name: "Supervivencia", value: 0, proficient: false, attribute: "wisdom" },
+  { name: "Trato con Animales", value: 0, proficient: false, attribute: "charisma" },
+] as const
 
 const calculateProficiencyBonus = (level: number): number => {
   if (level >= 17) return 6
@@ -78,14 +70,142 @@ const calculateSkillValue = (
   return modifier + (isProficient ? proficiencyBonus : 0)
 }
 
-export function Skills() {
-  const { level, class: characterClass, attributes, skills } = useCharacterStore((state) => state.character)
-  const setCharacter = useCharacterStore((state) => state.setCharacter)
 
-  // Valores calculados
-  const proficiencyBonus = useMemo(() => calculateProficiencyBonus(level), [level])
-  const availableCompetitions = useMemo(() => getAvailableCompetitions(characterClass), [characterClass])
-  const currentProficiencies = useMemo(() => skills.filter(skill => skill.proficient).length, [skills])
+const SkillItem = ({ key, form, skill, canToggle, currentProficiencies, availableCompetitions, proficiencyBonus }: { key: string, form: UseFormReturn<z.infer<typeof completeCharacterSchema>>, skill: Skill, canToggle: boolean, currentProficiencies: number, availableCompetitions: number, proficiencyBonus: number }) => {
+  const { attributes } = useWatch({ control: form.control })
+
+  const handleSkillChange = (checked: boolean, field: ControllerRenderProps<z.infer<typeof completeCharacterSchema>, "skills">) => {
+    if (checked && currentProficiencies >= availableCompetitions) {
+      return
+    }
+
+    const updatedSkills = field.value?.map(s => {
+      if (s.name === skill.name) {
+        const attribute = s.attribute as keyof typeof attributes
+        const attributeValue = attributes?.[attribute] || 10
+        const value = calculateSkillValue(attributeValue, checked, proficiencyBonus)
+
+        return {
+          ...s,
+          proficient: checked,
+          value
+        }
+      }
+      return s
+    }) || []
+
+    field.onChange(updatedSkills)
+  }
+  return (
+    <FormField
+      key={skill.name}
+      control={form.control}
+      name="skills"
+      render={({ field }) => {
+        return (
+          <FormItem
+            key={skill.name}
+            className="flex flex-row items-center gap-2 space-y-0"
+          >
+            <FormControl>
+              <Checkbox
+                id={skill.name}
+                checked={field?.value?.find(s => s.name === skill.name)?.proficient || false}
+                disabled={!canToggle}
+                onCheckedChange={(checked: boolean) => handleSkillChange(checked, field)}
+              />
+            </FormControl>
+            <FormLabel className="flex justify-between items-center w-full cursor-pointer"
+              onClick={() => handleSkillChange(!(field?.value?.find(s => s.name === skill.name)?.proficient || false), field)}
+            >
+              <span className={!canToggle ? "text-muted-foreground" : ""}>
+                {skill.name}
+              </span>
+              <Badge variant={field?.value?.find(s => s.name === skill.name)?.proficient || false ? "default" : "outline"}>
+                {(() => {
+                  const skillValue = field?.value?.find(s => s.name === skill.name)?.value
+                  if (typeof skillValue === 'undefined') return 0
+                  return `${skillValue >= 0 ? '+' : ''}${skillValue}`
+                })()}
+              </Badge>
+            </FormLabel>
+          </FormItem>
+        )
+      }}
+    />
+  )
+}
+
+
+const AttributeSkills = ({ attribute, modifier, attributeSkills, currentProficiencies, availableCompetitions, form, attributes, proficiencyBonus }: { attribute: string, modifier: number, attributeSkills: Skill[], currentProficiencies: number, availableCompetitions: number, form: UseFormReturn<z.infer<typeof completeCharacterSchema>>, attributes: any, proficiencyBonus: number }) => {
+  return (
+    <Card key={attribute}>
+      <CardContent className="p-4">
+        <FormField
+          control={form.control}
+          name="skills"
+          render={() => {
+            return (
+              <FormItem>
+                <div className="flex items-center gap-2 mb-3">
+                  <p className="text-sm text-muted-foreground">Attribute</p>
+                  <FormLabel className="font-medium">
+                    {ATTRIBUTE_DISPLAY_NAMES[attribute as keyof typeof ATTRIBUTE_DISPLAY_NAMES]}
+                  </FormLabel>
+                  <Badge variant="outline">
+                    {modifier >= 0 ? "+" : ""}{modifier}
+                  </Badge>
+                </div>
+
+                <div className="space-y-2">
+                  {attributeSkills.map(skill => {
+                    const canToggle = skill.proficient || currentProficiencies < availableCompetitions
+
+                    return (
+                      <SkillItem
+                        key={skill.name}
+                        form={form}
+                        skill={skill}
+                        canToggle={canToggle}
+                        currentProficiencies={currentProficiencies}
+                        availableCompetitions={availableCompetitions}
+                        proficiencyBonus={proficiencyBonus}
+                      />
+                    )
+                  })}
+                </div>
+              </FormItem>
+            )
+          }}
+        />
+      </CardContent>
+    </Card>
+  )
+}
+
+export function Skills({ form }: { form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) {
+  const { class: characterClass, attributes, skills } = useWatch({ control: form.control })
+  const level = 1
+
+  // Inicializar skills si no existen - usando useEffect para evitar setState durante render
+  useEffect(() => {
+    if (!skills || skills.length === 0) {
+      form.setValue("skills", DefaultSkills.map(skill => ({
+        name: skill.name,
+        value: calculateSkillValue(
+          attributes?.[skill.attribute as keyof typeof attributes] || 10,
+          false,
+          calculateProficiencyBonus(level)
+        ),
+        proficient: false,
+        attribute: skill.attribute
+      })))
+    }
+  }, [skills, attributes, form, level])
+
+  const proficiencyBonus = calculateProficiencyBonus(level)
+  const availableCompetitions = getAvailableCompetitions(characterClass?.toString() || "1")
+  const currentProficiencies = skills?.filter(skill => skill.proficient).length || 0
 
   // Skills organizadas por atributo
   const skillsByAttribute = useMemo(() => {
@@ -98,38 +218,14 @@ export function Skills() {
       charisma: [],
     }
 
-    skills.forEach(skill => {
-      const attribute = getAttributeBySkill(skill.name)
-      grouped[attribute].push(skill)
+    skills?.forEach(skill => {
+      const attribute = getAttributeBySkill(skill.name || "")
+      grouped[attribute].push(skill as Skill)
     })
 
     return grouped
   }, [skills])
 
-  // Manejador de cambio de competencia
-  const handleSkillChange = useCallback((skillName: string, proficient: boolean) => {
-    // Verificar si puede agregar más competencias
-    if (proficient && currentProficiencies >= availableCompetitions) {
-      return
-    }
-
-    const updatedSkills = skills.map(skill => {
-      if (skill.name === skillName) {
-        const attribute = getAttributeBySkill(skillName) as keyof typeof attributes
-        const attributeValue = attributes[attribute] || 10
-        const value = calculateSkillValue(attributeValue, proficient, proficiencyBonus)
-
-        return {
-          ...skill,
-          proficient,
-          value
-        }
-      }
-      return skill
-    })
-
-    setCharacter({ skills: updatedSkills })
-  }, [skills, attributes, proficiencyBonus, currentProficiencies, availableCompetitions, setCharacter])
 
   return (
     <div className="space-y-6">
@@ -156,50 +252,21 @@ export function Skills() {
         {Object.entries(skillsByAttribute).map(([attribute, attributeSkills]) => {
           if (attributeSkills.length === 0) return null
 
-          const attributeValue = attributes[attribute as keyof typeof attributes] || 10
+          const attributeValue = attributes?.[attribute as keyof typeof attributes] || 10
           const modifier = calculateAttributeModifier(attributeValue)
 
           return (
-            <Card key={attribute}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <h4 className="font-medium">
-                    {ATTRIBUTE_DISPLAY_NAMES[attribute as keyof typeof ATTRIBUTE_DISPLAY_NAMES]}
-                  </h4>
-                  <Badge variant="outline">
-                    {modifier >= 0 ? "+" : ""}{modifier}
-                  </Badge>
-                </div>
-
-                <div className="space-y-2">
-                  {attributeSkills.map(skill => {
-                    const canToggle = skill.proficient || currentProficiencies < availableCompetitions
-
-                    return (
-                      <div key={skill.name} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={skill.name}
-                          checked={skill.proficient}
-                          disabled={!canToggle}
-                          onCheckedChange={(checked: boolean) => handleSkillChange(skill.name, checked)}
-                        />
-                        <Label
-                          htmlFor={skill.name}
-                          className="flex justify-between items-center w-full cursor-pointer"
-                        >
-                          <span className={!canToggle ? "text-muted-foreground" : ""}>
-                            {skill.name}
-                          </span>
-                          <Badge variant={skill.proficient ? "default" : "outline"}>
-                            {skill.value >= 0 ? "+" : ""}{skill.value}
-                          </Badge>
-                        </Label>
-                      </div>
-                    )
-                  })}
-                </div>
-              </CardContent>
-            </Card>
+            <AttributeSkills
+              key={attribute}
+              attribute={attribute}
+              modifier={modifier}
+              attributeSkills={attributeSkills}
+              currentProficiencies={currentProficiencies}
+              availableCompetitions={availableCompetitions}
+              form={form}
+              attributes={attributes}
+              proficiencyBonus={proficiencyBonus}
+            />
           )
         })}
       </div>

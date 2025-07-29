@@ -4,15 +4,19 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormTabs } from "@/components/character/form/steps/FormTabs"
 import { FormNavigationButtons } from "@/components/character/form/steps/FormNavigationButtons"
-import { useCharacterStore } from "@/stores/useCharacterStore"
-import { saveCharacter } from "@/lib/actions"
-import { useForm } from "react-hook-form"
+import { submitForm } from "@/actions/characterForm"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { attributesCharacterSchema, basicCharacterSchema, completeCharacterSchema, equipmentCharacterSchema, historyCharacterSchema, skillsCharacterSchema } from "@/lib/validations/character"
+import { attributesCharacterSchema, basicCharacterSchema, CompleteCharacterFormType, completeCharacterSchema, equipmentCharacterSchema, historyCharacterSchema, skillsCharacterSchema } from "@/lib/validations/character"
 import { useSteps } from "@/hooks/useSteps"
 import { TOTAL_STEPS } from "@/constants/formSteps"
 import { Form } from "@/components/ui/form"
+import { FormDebugger } from "@/components/character/form/FormDebugger"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+
+const ERROR_MESSAGE = "Ocurrió un error al guardar el personaje."
 
 const useCharacterForm = () => {
     const basicCharacterForm = useForm<z.infer<typeof basicCharacterSchema>>({
@@ -35,8 +39,12 @@ const useCharacterForm = () => {
         resolver: zodResolver(historyCharacterSchema),
     })
 
-    const form = useForm<z.infer<typeof completeCharacterSchema>>({
+    const form = useForm<CompleteCharacterFormType>({
         resolver: zodResolver(completeCharacterSchema),
+        defaultValues: {
+            name: "",
+            equipment: [],
+        }
     })
 
     return {
@@ -60,11 +68,7 @@ function CharacterForm() {
         setStep,
     } = useSteps(0, TOTAL_STEPS)
 
-    // const handleFormSubmit = async (formData: FormData) => {
-    //     if (step === TOTAL_STEPS - 1) {
-    //         await saveCharacter(character)
-    //     }
-    // }
+    const router = useRouter()
 
     const {
         basicCharacterForm,
@@ -75,41 +79,44 @@ function CharacterForm() {
         form,
     } = useCharacterForm()
 
-
-    const character = useCharacterStore((state) => state.character)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitResult, setSubmitResult] = useState<{ success?: boolean; error?: string } | null>(null)
 
-    const onSubmit = async (values: z.infer<typeof completeCharacterSchema>) => {
-
-        console.log('values', values)
-        // Solo enviar si estamos en el último paso
-        if (!isLastStep) return
+    const onSubmit: SubmitHandler<CompleteCharacterFormType> = async (values) => {
 
         setIsSubmitting(true)
         setSubmitResult(null)
 
         try {
-            console.log('📋 Datos del personaje desde Zustand:', character)
+            console.log("formData")
+            const formData = new FormData()
+            formData.append("name", values.name)
+            formData.append("race", values.race)
+            formData.append("class", values.class)
+            formData.append("background", values.background)
+            formData.append("alignment", values.alignment)
+            formData.append("skills", JSON.stringify(values.skills))
+            formData.append("attributes", JSON.stringify(values.attributes))
+            formData.append("equipment", JSON.stringify(values.equipment))
+            formData.append("history", JSON.stringify(values.history))
+            formData.append("image", values.image)
+            const { data, errors } = await submitForm(formData)
 
-            // Validaciones básicas
-            if (!character.name) {
-                throw new Error('El nombre del personaje es requerido')
-            }
-            if (!character.race || !character.class) {
-                throw new Error('Debes seleccionar una raza y clase')
-            }
-
-            // Llamar a la server action
-            throw new Error('Error de prueba')
-            const result = await saveCharacter(character)
-
-            if (result?.error) {
-                setSubmitResult({ success: false, error: result.error })
+            if (errors) {
+                const errorsArray = await errors
+                if (Array.isArray(errorsArray)) {
+                    toast.error('Ha ocurrido un error', {
+                        description: errorsArray.map((error) => error.message).join(', ')
+                    })
+                } else {
+                    toast.error('Ha ocurrido un error', {
+                        description: errorsArray.message
+                    })
+                }
             } else {
-                setSubmitResult({ success: true })
-                // El redirect se maneja en saveCharacter
+                router.push("/personajes")
             }
+
         } catch (error) {
             console.error('❌ Error al guardar personaje:', error)
             setSubmitResult({
@@ -125,6 +132,7 @@ function CharacterForm() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
                 console.log('❌ Submit falló por errores:', errors)
+                setStep(0)
             })}>
                 <Card className="max-w-4xl mx-auto">
                     <CardHeader>
@@ -150,6 +158,7 @@ function CharacterForm() {
                         onPreviousStep={previousStep}
                     />
                 </Card>
+                <FormDebugger form={form} />
             </form>
         </Form>
     )

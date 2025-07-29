@@ -2,16 +2,15 @@ import { CharacterNameInput } from "@/components/character/form/CharacterNameInp
 import { CharacterSelectsGrid } from "@/components/character/form/CharacterSelectsGrid"
 import { CharacterAvatarUpload } from "@/components/character/form/CharacterAvatarUpload"
 // import { LevelExperienceInputs } from "./LevelExperienceInputs"
+import { CompleteCharacterFormType } from "@/lib/validations/character"
 import { UseFormReturn } from "react-hook-form"
-import { z } from "zod"
-import { completeCharacterSchema } from "@/lib/validations/character"
 
-export function BasicInformationPanel({ form }: { form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) {
+export function BasicInformationPanel({ form }: { form: UseFormReturn<CompleteCharacterFormType> }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <CharacterNameInput form={form} />
+          <CharacterNameInput control={form.control} />
 
           <CharacterSelectsGrid form={form} />
 
@@ -24,8 +23,7 @@ export function BasicInformationPanel({ form }: { form: UseFormReturn<z.infer<ty
           /> */}
         </div>
 
-        {/* Avatar del personaje */}
-        <CharacterAvatarUpload />
+        <CharacterAvatarUpload form={form} />
       </div>
     </div>
   )

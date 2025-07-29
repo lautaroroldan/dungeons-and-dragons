@@ -4,11 +4,21 @@ import { useState, useRef } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Camera } from "lucide-react"
-import { useCharacterStore } from "@/stores/useCharacterStore"
+import { Input } from "@/components/ui/input"
+import { UseFormReturn, useWatch } from "react-hook-form"
+import { CompleteCharacterFormType } from "@/lib/validations/character"
 
-export function CharacterAvatarUpload() {
-    const image = useCharacterStore((state) => state.character.image)
-    const setCharacter = useCharacterStore((state) => state.setCharacter)
+interface CharacterAvatarUploadProps {
+    form: UseFormReturn<CompleteCharacterFormType>
+}
+
+export function CharacterAvatarUpload({ form }: CharacterAvatarUploadProps) {
+    const image = useWatch({
+        control: form.control,
+        name: "image",
+        defaultValue: ""
+    })
+
     const [avatarPreview, setAvatarPreview] = useState(image)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -35,7 +45,7 @@ export function CharacterAvatarUpload() {
             reader.onload = (e) => {
                 const result = e.target?.result as string
                 setAvatarPreview(result)
-                setCharacter({ image: result })
+                form.setValue("image", result)
             }
             reader.readAsDataURL(file)
         }
@@ -67,7 +77,7 @@ export function CharacterAvatarUpload() {
                     </div>
                 </div>
 
-                <input
+                <Input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"

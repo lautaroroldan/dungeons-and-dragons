@@ -4,48 +4,51 @@ import { z } from 'zod'
 import { completeCharacterSchema } from '@/lib/validations/character'
 import { FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useStaticData } from '@/hooks/useStaticData'
 import { BasicTable } from '@/db/schema'
+import useSWR from 'swr'
 
 interface SelectFormProps {
     form: UseFormReturn<z.infer<typeof completeCharacterSchema>>
     name: keyof z.infer<typeof completeCharacterSchema>
-    url: () => Promise<BasicTable[]>
+    fetcher: () => Promise<BasicTable[]>
+    fetchKey: string
     label: string
     placeholder?: string
 }
 
-export function SelectForm({ form, name, label, url, placeholder = "Selecciona una opción" }: SelectFormProps) {
+export function SelectForm({ form, name, label, fetcher, fetchKey, placeholder = "Selecciona una opción" }: SelectFormProps) {
 
-    const { data: options, loading } = useStaticData(url, 'id')
+    const { data: options, isLoading } = useSWR(fetchKey, fetcher)
 
     return (
-        <FormField
-            control={form.control}
-            name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>{label}</FormLabel>
-                    <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
-                    >
-                        <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {loading ? <SelectItem value="loading">Cargando...</SelectItem> : options?.map((option) => (
-                                <SelectItem key={option.id} value={option.id.toString()}>
-                                    {option.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
+        <div>
+            <FormField
+                control={form.control}
+                name={name}
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{label}</FormLabel>
+                        <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                        >
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={placeholder} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {isLoading ? <SelectItem value="loading">Cargando...</SelectItem> : options?.map((option) => (
+                                    <SelectItem key={option.id} value={option.id.toString()}>
+                                        {option.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
     )
 }

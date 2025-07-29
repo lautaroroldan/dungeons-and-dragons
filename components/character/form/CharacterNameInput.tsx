@@ -2,16 +2,15 @@
 
 import { Input } from "@/components/ui/input"
 import { FormControl, FormField, FormLabel, FormItem, FormMessage } from "@/components/ui/form"
-import { completeCharacterSchema } from "@/lib/validations/character"
-import { UseFormReturn } from "react-hook-form"
-import { z } from "zod"
+import { CompleteCharacterFormType } from "@/lib/validations/character"
+import { Control } from "react-hook-form"
 
-export function CharacterNameInput({ form }: { form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) {
+export function CharacterNameInput({ control }: { control: Control<CompleteCharacterFormType> }) {
 
     return (
         <div className="space-y-2">
             <FormField
-                control={form.control}
+                control={control}
                 name="name"
                 render={({ field }) => (
                     <FormItem>
