@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 import { db } from "@/db"
 import { racesTable, classesTable, backgroundsTable, alignmentsTable } from "../schema"
 import { unstable_cacheTag as cacheTag } from "next/cache"

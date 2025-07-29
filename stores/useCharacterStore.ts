@@ -38,13 +38,13 @@ export type SpecialAbility = {
     description: string;
     type: string;
     level: number;
-    source: string;
+    source?: string;
 }
 
 export type Equipment = {
     name: string;
     type: string;
-    image: string | null;
+    image?: string | null;
 }
 
 export type Skill = {

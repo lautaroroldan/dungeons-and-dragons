@@ -27,3 +27,12 @@ export const ATTRIBUTE_DISPLAY_NAMES = {
     wisdom: "Sabiduría",
     charisma: "Carisma"
 } as const
+
+export const ATTRIBUTE_ABBREVIATIONS = {
+    strength: "FUE",
+    dexterity: "DES",
+    constitution: "CON",
+    intelligence: "INT",
+    wisdom: "SAB",
+    charisma: "CAR"
+} as const

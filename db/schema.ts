@@ -1,6 +1,5 @@
 import { integer, pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 
-
 export const racesTable = pgTable('races', {
     id: serial('id').primaryKey(),
     name: text('name').notNull(),
@@ -81,7 +80,6 @@ export const charactersTable = pgTable('characters', {
         .references(() => attributesTable.id),
 });
 
-// Tabla intermedia para la relación muchos a muchos entre personajes y equipamiento
 export const characterEquipmentTable = pgTable('character_equipment', {
     id: serial('id').primaryKey(),
     characterId: integer('character_id')
@@ -91,7 +89,7 @@ export const characterEquipmentTable = pgTable('character_equipment', {
         .notNull()
         .references(() => equipmentTable.id, { onDelete: 'cascade' }),
     quantity: integer('quantity').notNull().default(1),
-    isEquipped: integer('is_equipped').notNull().default(0), // 0 = false, 1 = true
+    isEquipped: integer('is_equipped').notNull().default(0),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -140,8 +138,10 @@ export interface AttributesTable {
     charisma: number;
 }
 
+export type EquipmentType = "weapon" | "armor" | "object"
+
 export interface EquipmentTable extends BasicTable {
-    type: string;
+    type: EquipmentType;
     description?: string;
     image?: string;
 }

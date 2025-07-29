@@ -43,22 +43,28 @@ export const equipmentSchema = z.object({
 })
 
 export const characterSchema = z.object({
-    name: z.string()
-        .min(1, "El nombre es requerido")
+    name: z.string({
+        required_error: "El nombre es requerido",
+        invalid_type_error: "El nombre debe ser una cadena de texto",
+    })
         .min(2, "El nombre debe tener al menos 2 caracteres")
         .max(50, "El nombre no puede exceder 50 caracteres"),
 
-    class: z.string()
-        .min(1, "Debes seleccionar una clase"),
+    class: z.string({
+        required_error: "Debes seleccionar una clase",
+    }),
 
-    race: z.string()
-        .min(1, "Debes seleccionar una raza"),
+    race: z.string({
+        required_error: "Debes seleccionar una raza",
+    }),
 
-    background: z.string()
-        .min(1, "Debes seleccionar un trasfondo"),
+    background: z.string({
+        required_error: "Debes seleccionar un trasfondo",
+    }),
 
-    alignment: z.string()
-        .min(1, "Debes seleccionar un alineamiento"),
+    alignment: z.string({
+        required_error: "Debes seleccionar un alineamiento",
+    }),
 
     // level: z.number()
     //     .int("Debe ser un número entero")
@@ -76,7 +82,7 @@ export const characterSchema = z.object({
     attributes: attributesSchema,
     skills: z.array(skillSchema).min(1, "Debes seleccionar al menos una habilidad"),
     equipment: z.array(equipmentSchema).default([]),
-    history: historySchema,
+    history: historySchema.optional(),
 })
 
 export type CharacterFormData = z.infer<typeof characterSchema>
@@ -95,6 +101,8 @@ export const basicCharacterSchema = characterSchema.pick({
     image: true,
 })
 
+export type BasicCharacterFormData = z.infer<typeof basicCharacterSchema>
+
 export const attributesCharacterSchema = characterSchema.pick({
     attributes: true,
 })
@@ -111,4 +119,5 @@ export const historyCharacterSchema = characterSchema.pick({
     history: true,
 })
 
-export const completeCharacterSchema = characterSchema 
+export const completeCharacterSchema = characterSchema
+export type CompleteCharacterFormType = z.infer<typeof completeCharacterSchema>

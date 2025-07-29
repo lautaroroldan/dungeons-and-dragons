@@ -9,7 +9,7 @@ export async function createCharacter(data: InsertCharacter) {
     return character;
 }
 
-type CreateCharacterWithAttributesInput = Omit<InsertCharacter, 'attributes'> & {
+export type CreateCharacterWithAttributesInput = Omit<InsertCharacter, 'attributes'> & {
     attributes: Omit<AttributesTable, 'id'>;
 };
 
@@ -139,11 +139,14 @@ export async function createCompleteCharacter(
     historyData?: Omit<History, 'specialAbilities'>,
     specialAbilities?: SpecialAbility[]
 ) {
+    console.log("createCompleteCharacter", { characterData, equipmentObjects, skillObjects, historyData, specialAbilities })
     return await db.transaction(async (tx) => {
         // 1. Crear atributos
         const [attributes] = await tx.insert(attributesTable)
             .values(characterData.attributes)
             .returning();
+
+        console.log("attributes", attributes)
 
         // 2. Crear personaje
         const [character] = await tx.insert(charactersTable)

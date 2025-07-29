@@ -1,6 +1,6 @@
 import { Equipment } from "@/stores/useCharacterStore"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { EquipmentItem } from "./EquipmentItem"
+import { EquipmentItem } from "@/components/character/EquipmentItem"
 
 interface CharacterEquipment {
     id: number
@@ -14,7 +14,6 @@ interface EquipmentSectionProps {
 }
 
 export function EquipmentSection({ equipment }: EquipmentSectionProps) {
-    // Categorizar equipamiento en una sola iteración - más eficiente
     const categorizedEquipment = equipment.reduce(
         (acc, item) => {
             const type = item.equipment.type.toLowerCase()
@@ -42,7 +41,6 @@ export function EquipmentSection({ equipment }: EquipmentSectionProps) {
     )
 
     const { weapons, armor, otherItems } = categorizedEquipment
-    console.log(weapons, armor, otherItems)
 
     const isEquipped = (item: CharacterEquipment) => {
         return item.isEquipped === 1
@@ -111,7 +109,6 @@ export function EquipmentSection({ equipment }: EquipmentSectionProps) {
                         </div>
                     )}
 
-                    {/* Estado vacío */}
                     {equipment.length === 0 && (
                         <div className="text-center py-8">
                             <div className="text-muted-foreground">
@@ -121,7 +118,6 @@ export function EquipmentSection({ equipment }: EquipmentSectionProps) {
                         </div>
                     )}
 
-                    {/* Resumen de equipamiento */}
                     {equipment.length > 0 && (
                         <div className="border-t pt-4">
                             <h4 className="text-sm font-semibold mb-2">Resumen</h4>
