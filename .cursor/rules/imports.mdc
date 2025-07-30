@@ -1,0 +1,265 @@
+---
+alwaysApply: true
+---
+
+# Reglas de Imports - D&D Project
+
+Este archivo define las reglas y mejores prácticas para imports en el proyecto D&D siguiendo el Screaming Architecture Pattern.
+
+## 🎯 **Aliases de Importación**
+
+### **USAR SIEMPRE estos aliases:**
+```typescript
+// ✅ CORRECTO - Usar aliases de dominio
+import { CharacterCard } from '@characters/components/CharacterCard'
+import { QuestItem } from '@quests/components/QuestItem'
+import { Button } from '@shared/components/ui/button'
+import { cn } from '@shared/utils/utils'
+
+// ❌ INCORRECTO - No usar rutas relativas largas
+import { CharacterCard } from '../../../characters/components/CharacterCard'
+import { Button } from '../../shared/components/ui/button'
+```
+
+### **Aliases Configurados:**
+- `@characters/*` → `./src/characters/*` - Todo relacionado con personajes D&D
+- `@shared/*` → `./src/shared/*` - Componentes UI, utils y elementos compartidos  
+- `@quests/*` → `./src/quests/*` - Todo relacionado con misiones/aventuras
+- `@/db/*` → `./db/*` - Base de datos (mantener como está)
+- `@/*` → `./*` - Raíz del proyecto (solo para casos especiales)
+
+## 🧩 **Componentes UI - Shadcn/ui Priority**
+
+### **REGLA PRINCIPAL: Usar shadcn/ui ANTES que instalar nuevas librerías**
+
+```typescript
+// ✅ CORRECTO - Usar componentes shadcn existentes
+import { Button } from '@shared/components/ui/button'
+import { Card, CardContent, CardHeader } from '@shared/components/ui/card'
+import { Dialog, DialogContent, DialogTrigger } from '@shared/components/ui/dialog'
+import { Form, FormControl, FormField } from '@shared/components/ui/form'
+import { Input } from '@shared/components/ui/input'
+import { Badge } from '@shared/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@shared/components/ui/tabs'
+```
+
+### **Componentes Shadcn/ui Disponibles:**
+- **Layout**: `Card`, `Separator`, `Sheet`, `Sidebar`
+- **Forms**: `Form`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch`
+- **Navigation**: `Tabs`, `Breadcrumb`, `Pagination`, `NavigationMenu`
+- **Feedback**: `Alert`, `AlertDialog`, `Badge`, `Progress`, `Skeleton`, `Sonner`
+- **Overlay**: `Dialog`, `Popover`, `HoverCard`, `Tooltip`, `ContextMenu`
+- **Data Display**: `Table`, `Calendar`, `Chart`, `Avatar`
+- **Buttons**: `Button`, `Toggle`, `ToggleGroup`
+
+### **Antes de instalar una nueva librería UI:**
+1. ✅ Verificar si existe componente similar en shadcn/ui
+2. ✅ Revisar si se puede componer con componentes existentes
+3. ✅ Considerar crear variante personalizada del componente shadcn
+4. ❌ Solo entonces considerar librería externa
+
+## 📁 **Estructura de Imports por Dominio**
+
+### **Characters Domain (`@characters/*`):**
+```typescript
+// Componentes
+import { CharacterCard } from '@characters/components/CharacterCard'
+import { CreateCharacter } from '@characters/components/form/CreateCharacter'
+import { AttributesSection } from '@characters/components/AttributesSection'
+
+// Hooks
+import { useCharacterStore } from '@characters/hooks/useCharacterStore'
+import { useEquipmentManager } from '@characters/hooks/useEquipmentManager'
+
+// Types & Validators
+import { CompleteCharacterFormType } from '@characters/types/character'
+
+// Utils & Constants
+import { ATTRIBUTE_ABBREVIATIONS } from '@characters/utils/attributes'
+import { EQUIPMENT_CATEGORIES } from '@characters/utils/equipment'
+import { submitForm } from '@characters/utils/characterForm'
+```
+
+### **Shared Domain (`@shared/*`):**
+```typescript
+// UI Components
+import { Button } from '@shared/components/ui/button'
+import { Card } from '@shared/components/ui/card'
+
+// General Components  
+import { Header } from '@shared/components/header/Header'
+import { Title } from '@shared/components/Title'
+import { ThemeToggle } from '@shared/components/ThemeToggle'
+
+// Utils
+import { cn } from '@shared/utils/utils'
+
+// Hooks
+import { useSteps } from '@shared/hooks/useSteps'
+```
+
+### **Quests Domain (`@quests/*`):**
+```typescript
+// Componentes
+import { QuestItem } from '@quests/components/QuestItem'
+
+// Hooks (cuando se agreguen)
+import { useQuestManager } from '@quests/hooks/useQuestManager'
+
+// Types (cuando se agreguen)
+import { QuestFormType } from '@quests/types/quest'
+```
+
+## 🔄 **Orden de Imports**
+
+### **Estructura recomendada:**
+```typescript
+// 1. React y librerías externas
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+// 2. Next.js imports
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+// 3. UI Components (shadcn/ui) - @shared
+import { Button } from '@shared/components/ui/button'
+import { Card, CardContent } from '@shared/components/ui/card'
+
+// 4. Shared Components - @shared
+import { Header } from '@shared/components/header/Header'
+import { Title } from '@shared/components/Title'
+
+// 5. Domain Components (characters, quests)
+import { CharacterCard } from '@characters/components/CharacterCard'
+import { QuestItem } from '@quests/components/QuestItem'
+
+// 6. Hooks
+import { useCharacterStore } from '@characters/hooks/useCharacterStore'
+import { useSteps } from '@shared/hooks/useSteps'
+
+// 7. Types & Validators
+import { CompleteCharacterFormType } from '@characters/types/character'
+
+// 8. Utils & Constants
+import { cn } from '@shared/utils/utils'
+import { FORM_STEPS } from '@characters/utils/formSteps'
+
+// 9. Database & API
+import { db } from '@/db'
+import { charactersTable } from '@/db/schema'
+
+// 10. Icons (al final)
+import { Users, Swords, Plus } from 'lucide-react'
+```
+
+## 🚫 **Imports Prohibidos**
+
+```typescript
+// ❌ NO USAR - Rutas relativas largas
+import { Button } from '../../../shared/components/ui/button'
+import { CharacterCard } from '../../characters/components/CharacterCard'
+
+// ❌ NO USAR - Paths obsoletos (fueron migrados)
+import { Button } from '@/components/ui/button'
+import { useSteps } from '@/hooks/useSteps'
+import { ATTRIBUTES } from '@/constants/attributes'
+
+// ❌ NO USAR - Imports de node_modules cuando existe equivalente en shadcn
+import Button from 'some-ui-library/Button'  // Usar @shared/components/ui/button
+import Modal from 'react-modal'              // Usar @shared/components/ui/dialog
+```
+
+## 🔧 **Utils y Helpers**
+
+### **cn() - Utility para clases CSS:**
+```typescript
+// ✅ SIEMPRE importar cn desde shared/utils
+import { cn } from '@shared/utils/utils'
+
+// Uso correcto
+className={cn(
+  "base-classes",
+  condition && "conditional-classes",
+  className // props className
+)}
+```
+
+### **Validaciones con Zod:**
+```typescript
+// ✅ Importar schemas desde types de cada dominio
+import { completeCharacterSchema } from '@characters/types/character'
+import { questSchema } from '@quests/types/quest' // cuando se agregue
+```
+
+## 📦 **Instalación de Nuevos Paquetes**
+
+### **Antes de `pnpm install nueva-libreria`:**
+
+1. **✅ Verificar shadcn/ui:** ¿Existe componente similar?
+2. **✅ Consultar:** ¿Se puede lograr con componentes existentes?  
+3. **✅ Considerar:** ¿Es realmente necesario o es "nice to have"?
+4. **✅ Evaluar:** Tamaño del bundle, mantenimiento, compatibilidad
+
+### **Librerías Aprobadas (ya en uso):**
+- `lucide-react` - Iconos
+- `react-hook-form` - Manejo de formularios
+- `@hookform/resolvers` - Validadores para forms
+- `zod` - Validación de schemas
+- `class-variance-authority` - Variantes de componentes
+- `tailwind-merge` - Merge de clases Tailwind
+- `gsap` - Animaciones (QuestItem)
+
+## 🎯 **Ejemplos Prácticos**
+
+### **Crear nuevo componente de Characters:**
+```typescript
+// src/characters/components/CharacterStats.tsx
+import React from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/components/ui/card'
+import { Badge } from '@shared/components/ui/badge'
+import { Progress } from '@shared/components/ui/progress'
+import { cn } from '@shared/utils/utils'
+import { ATTRIBUTE_ABBREVIATIONS } from '@characters/utils/attributes'
+import { CompleteCharacterFormType } from '@characters/types/character'
+
+// Implementación...
+```
+
+### **Crear nuevo componente de Quests:**
+```typescript
+// src/quests/components/QuestCard.tsx
+import React from 'react'
+import { Card, CardContent, CardHeader } from '@shared/components/ui/card'
+import { Button } from '@shared/components/ui/button'
+import { Badge } from '@shared/components/ui/badge'
+import { MapPin, Users, Clock } from 'lucide-react'
+
+// Implementación...
+```
+
+## 🔍 **Debugging de Imports**
+
+### **Errores comunes:**
+```bash
+# Error: Module not found '@/components/ui/button'
+# ✅ Solución: Cambiar a '@shared/components/ui/button'
+
+# Error: Module not found '@/lib/utils'  
+# ✅ Solución: Cambiar a '@shared/utils/utils'
+
+# Error: Module not found '@/constants/attributes'
+# ✅ Solución: Cambiar a '@characters/utils/attributes'
+```
+
+---
+
+## 📝 **Resumen Rápido**
+
+- ✅ **USAR**: `@characters/*`, `@shared/*`, `@quests/*`
+- ✅ **PRIORIDAD**: shadcn/ui components antes que librerías externas
+- ✅ **ORDEN**: React → Next.js → UI → Shared → Domain → Hooks → Types → Utils → DB → Icons
+- ❌ **EVITAR**: Rutas relativas largas, imports obsoletos, librerías innecesarias
+
+**La estructura debe "gritar" D&D: personajes, misiones y elementos compartidos** 🧙‍♂️⚔️🔧

@@ -26,23 +26,17 @@
       "@/*": [
         "./*"
       ],
-      "@/components/*": [
-        "./components/*"
+      "@characters/*": [
+        "./src/characters/*"
       ],
-      "@/lib/*": [
-        "./lib/*"
+      "@quests/*": [
+        "./src/quests/*" 
       ],
-      "@/hooks/*": [
-        "./hooks/*"
-      ],
-      "@/stores/*": [
-        "./stores/*"
+      "@shared/*": [
+        "./src/shared/*"
       ],
       "@/db/*": [
         "./db/*"
-      ],
-      "@/constants/*": [
-        "./constants/*"
       ]
     }
   },

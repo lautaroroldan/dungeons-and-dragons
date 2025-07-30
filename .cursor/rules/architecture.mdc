@@ -1,0 +1,87 @@
+---
+alwaysApply: true
+---
+
+# Screaming Architecture Pattern
+
+Este proyecto implementa el **Screaming Architecture Pattern**, un enfoque de arquitectura de software que enfatiza que la estructura de directorios debe "gritar" cuál es el propósito principal de la aplicación, organizando el código por **dominio de negocio** en lugar de por capas técnicas.
+
+## ¿Qué es Screaming Architecture?
+
+El término fue acuñado por **Robert C. Martin (Uncle Bob)** y se basa en la idea de que cuando miras la estructura de carpetas de un proyecto, deberías poder entender inmediatamente de qué trata la aplicación sin necesidad de revisar el código.
+
+### Principios Fundamentales:
+
+1. **Organización por Dominio**: Los directorios representan conceptos del negocio, no tecnologías
+2. **Cohesión Alta**: Todo lo relacionado con un dominio está junto
+3. **Acoplamiento Bajo**: Los dominios tienen dependencias mínimas entre sí
+4. **Claridad de Propósito**: La estructura "grita" la funcionalidad de la app
+
+## Estructura de Directorios Propuesta
+
+Para esta aplicación D&D, organizaremos por dominios principales:
+
+```
+src/
+├── characters/           # 🧙‍♂️ Dominio de Personajes
+│   ├── components/      # Componentes específicos de personajes
+│   ├── api/            # Endpoints y lógica de API para personajes
+│   ├── types/          # Tipos TypeScript específicos
+│   ├── hooks/          # Hooks personalizados del dominio
+│   └── utils/          # Utilidades específicas de personajes
+│
+├── quests/              # ⚔️ Dominio de Misiones/Aventuras  
+│   ├── components/     # Componentes específicos de misiones
+│   ├── api/           # Endpoints y lógica de API para misiones
+│   ├── types/         # Tipos TypeScript específicos
+│   ├── hooks/         # Hooks personalizados del dominio
+│   └── utils/         # Utilidades específicas de misiones
+│
+└── shared/              # 🔧 Elementos Compartidos
+    ├── components/     # Componentes UI reutilizables
+    ├── utils/         # Utilidades generales
+    ├── types/         # Tipos compartidos
+    ├── hooks/         # Hooks generales
+    └── constants/     # Constantes globales
+```
+
+## Dominios Identificados
+
+### 1. **Characters** 🧙‍♂️
+- **Propósito**: Gestión completa de personajes D&D
+- **Incluye**: Creación, edición, visualización, atributos, habilidades, equipamiento
+- **Nota**: La creación de personajes (`/personajes/crear`) forma parte de este dominio
+
+### 2. **Quests** ⚔️
+- **Propósito**: Gestión de misiones y aventuras
+- **Incluye**: Creación de misiones, asignación de personajes, seguimiento de progreso
+
+### 3. **Shared** 🔧
+- **Propósito**: Elementos transversales utilizados por múltiples dominios
+- **Incluye**: UI components, utilidades generales, tipos compartidos
+
+## Beneficios de Esta Arquitectura
+
+1. **Escalabilidad**: Fácil agregar nuevos dominios (campaigns, items, NPCs)
+2. **Mantenibilidad**: Cambios en un dominio no afectan otros
+3. **Onboarding Rápido**: Nuevos desarrolladores entienden la app por su estructura
+4. **Testing**: Tests organizados por dominio de negocio
+5. **Reutilización**: Componentes shared previenen duplicación
+
+## Migración Recomendada
+
+1. Crear estructura `src/` con dominios
+2. Migrar componentes de personajes a `src/characters/`
+3. Migrar componentes de misiones a `src/quests/`  
+4. Mover componentes UI generales a `src/shared/`
+5. Actualizar imports y referencias
+
+## Reglas de Dependencias
+
+- ✅ Dominios pueden depender de `shared/`
+- ✅ `shared/` no debe depender de dominios específicos
+- ⚠️ Dependencias entre dominios deben ser mínimas y explícitas
+- ❌ Evitar dependencias circulares entre dominios
+
+Esta arquitectura hará que el propósito de la aplicación D&D sea inmediatamente claro: gestión de **personajes** y **misiones** para campañas de rol.
+
