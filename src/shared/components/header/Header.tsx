@@ -3,7 +3,6 @@ import React from 'react'
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@shared/components/ui/breadcrumb'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ThemeToggle } from '@shared/components/ThemeToggle'
 import { Separator } from '@shared/components/ui/separator'
 
 function Header() {
@@ -45,7 +44,6 @@ function Header() {
                         ))}
                     </BreadcrumbList>
                 </Breadcrumb>
-                <ThemeToggle />
             </div>
             <Separator />
         </div>

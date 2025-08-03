@@ -2,7 +2,6 @@ import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@shared/components/ThemeProvider"
 import Header from "@shared/components/header/Header"
 import { Toaster } from "@shared/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] })
@@ -21,16 +20,9 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Header />
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <Header />
+        {children}
+        <Toaster />
       </body>
     </html>
   )
