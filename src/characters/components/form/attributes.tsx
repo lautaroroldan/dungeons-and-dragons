@@ -1,11 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Label } from "@shared/components/ui/label"
 import { Button } from "@shared/components/ui/button"
 import { Card, CardContent } from "@shared/components/ui/card"
 import { Dice6, RefreshCw } from "lucide-react"
-import { completeCharacterSchema } from "@/lib/validations/character"
+import { completeCharacterSchema } from "@characters/types/character"
 import { UseFormReturn, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { SliderForm } from "@characters/components/form/SliderForm"
@@ -14,12 +13,13 @@ import { showAttributeModifier } from "@shared/utils/utils"
 
 const AVAILABLE_POINTS = 27
 
+// TODO: POR EL MOMENTO AVAILABLE_POINTS ES UNA CONSTANTE, PERO LUEGO SE VA A CALCULAR DINAMICAMENTE MEDIANTE LAS REGLAS DE LA CLASE Y LAS QUE SE LE ASIGNAN A CADA PERSONAJE
 
 const AttributeItem = ({ attribute, form }: { attribute: string, form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) => {
   const currentValue = useWatch({
     control: form.control,
     name: `attributes.${attribute as keyof z.infer<typeof completeCharacterSchema>['attributes']}`
-  }) as number || 10;
+  }) ?? 10;
 
   return (
     <Card key={attribute}>
@@ -37,7 +37,6 @@ const AttributeItem = ({ attribute, form }: { attribute: string, form: UseFormRe
           <SliderForm
             name={`attributes.${attribute}` as keyof z.infer<typeof completeCharacterSchema>}
             control={form.control}
-            defaultValue={10}
             min={8}
             max={15}
             step={1}
@@ -57,30 +56,7 @@ const AttributeItem = ({ attribute, form }: { attribute: string, form: UseFormRe
 
 export function Attributes({ form }: { form: UseFormReturn<z.infer<typeof completeCharacterSchema>> }) {
 
-  const [availablePoints, setAvailablePoints] = useState(AVAILABLE_POINTS)
-
-  const attributes = form.watch("attributes") || {
-    strength: 10,
-    dexterity: 10,
-    constitution: 10,
-    intelligence: 10,
-    wisdom: 10,
-    charisma: 10
-  }
-
-  const resetAttributes = () => {
-    form.setValue("attributes", {
-      strength: 10,
-      dexterity: 10,
-      constitution: 10,
-      intelligence: 10,
-      wisdom: 10,
-      charisma: 10
-    })
-    setAvailablePoints(AVAILABLE_POINTS)
-  }
-
-
+  const attributes = useWatch({ control: form.control, name: "attributes" })
 
   return (
     <div className="space-y-6">
@@ -90,7 +66,7 @@ export function Attributes({ form }: { form: UseFormReturn<z.infer<typeof comple
           <p className="text-sm text-muted-foreground">Asigna valores a los atributos de tu personaje</p>
         </div>
         <div className="flex gap-2">
-          <Button type="button" variant="outline" size="sm" onClick={resetAttributes}>
+          <Button type="button" variant="outline" size="sm" onClick={() => form.resetField("attributes")}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Resetear
           </Button>
@@ -101,10 +77,10 @@ export function Attributes({ form }: { form: UseFormReturn<z.infer<typeof comple
         </div>
       </div>
 
-      {availablePoints > 0 && (
+      {AVAILABLE_POINTS > 0 && (
         <div className="bg-muted p-3 rounded-lg text-center">
           <p className="text-sm">
-            Puntos disponibles: <span className="font-bold">{availablePoints}</span>
+            Puntos disponibles: <span className="font-bold">{AVAILABLE_POINTS}</span>
           </p>
           <p className="text-xs text-muted-foreground">Usa el sistema de puntos para asignar valores entre 8 y 15</p>
         </div>

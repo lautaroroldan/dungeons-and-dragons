@@ -1,6 +1,6 @@
 import { ComponentType } from "react"
 import { BasicInformationPanel } from "@characters/components/form/BasicInformationPanel"
-import { Attributes } from "@characters/components/form/attributes"
+import { Attributes } from "@characters/components/form/Attributes"
 import { Skills } from "@characters/components/form/skills"
 import { AddCharacterEquipment } from "@characters/components/form/equipment/Equipment"
 import { History } from "@characters/components/form/history/History"
