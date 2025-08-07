@@ -21,7 +21,7 @@ export const specialAbilitySchema = z.object({
 })
 
 export const historySchema = z.object({
-    history: z.string().optional(),
+    backstory: z.string().optional(),
     traits: z.string().optional(),
     ideals: z.string().optional(),
     bonds: z.string().optional(),
@@ -66,16 +66,16 @@ export const characterSchema = z.object({
         required_error: "Debes seleccionar un alineamiento",
     }),
 
-    // level: z.number()
-    //     .int("Debe ser un número entero")
-    //     .min(1, "El nivel mínimo es 1")
-    //     .max(20, "El nivel máximo es 20")
-    //     .default(1),
+    level: z.number()
+        .int("Debe ser un número entero")
+        .min(1, "El nivel mínimo es 1")
+        .max(20, "El nivel máximo es 20")
+        .default(1),
 
-    // experience: z.number()
-    //     .int("Debe ser un número entero")
-    //     .min(0, "La experiencia no puede ser negativa")
-    //     .default(0),
+    experience: z.number()
+        .int("Debe ser un número entero")
+        .min(0, "La experiencia no puede ser negativa")
+        .default(0),
 
     image: z.string().default(""),
 
@@ -98,6 +98,8 @@ export const basicCharacterSchema = characterSchema.pick({
     class: true,
     background: true,
     alignment: true,
+    level: true,
+    experience: true,
     image: true,
 })
 

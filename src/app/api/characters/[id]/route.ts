@@ -1,0 +1,27 @@
+import { NextRequest, NextResponse } from "next/server"
+import { getFullCharacterById } from "@/db/queries/select"
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await params
+        const character = await getFullCharacterById(Number(id))
+
+        if (!character) {
+            return NextResponse.json(
+                { error: "Character not found" },
+                { status: 404 }
+            )
+        }
+
+        return NextResponse.json(character)
+    } catch (error) {
+        console.error("Error fetching character:", error)
+        return NextResponse.json(
+            { error: "Internal server error" },
+            { status: 500 }
+        )
+    }
+}

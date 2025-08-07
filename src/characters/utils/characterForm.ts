@@ -2,7 +2,7 @@
 
 import { CreateCharacterWithAttributesInput, createCompleteCharacter } from "@/db/queries/insert";
 import { completeCharacterSchema } from "@characters/types/character"
-import { History } from "@/stores/useCharacterStore";
+import { History } from "@characters/hooks/useCharacterStore";
 import { revalidateTag } from "next/cache";
 import { z } from "zod"
 
@@ -18,6 +18,8 @@ export async function transformZodErrors(error: z.ZodError) {
 
 export async function submitForm(formData: FormData) {
     try {
+        const characterId = formData.get("id") // Para modo edición
+        const isEdit = Boolean(characterId)
 
         const validatedFields = completeCharacterSchema.parse({
             name: formData.get("name"),
@@ -44,15 +46,22 @@ export async function submitForm(formData: FormData) {
             experience: 0,
         }
         const history: Omit<History, 'specialAbilities'> = {
-            history: validatedFields.history?.history || "",
+            history: validatedFields.history?.backstory || "",
             traits: validatedFields.history?.traits || "",
             ideals: validatedFields.history?.ideals || "",
             bonds: validatedFields.history?.bonds || "",
             flaws: validatedFields.history?.flaws || "",
         }
 
-        await createCompleteCharacter(character, validatedFields.equipment, validatedFields.skills, history, validatedFields.history?.specialAbilities)
-        console.log("character created")
+        if (isEdit) {
+            // TODO: Implementar función de actualización cuando esté disponible
+            // await updateCompleteCharacter(Number(characterId), character, validatedFields.equipment, validatedFields.skills, history, validatedFields.history?.specialAbilities)
+            console.log("character updated (placeholder)")
+        } else {
+            await createCompleteCharacter(character, validatedFields.equipment, validatedFields.skills, history, validatedFields.history?.specialAbilities)
+            console.log("character created")
+        }
+
         revalidateTag("characters")
         return {
             data: { success: true },
