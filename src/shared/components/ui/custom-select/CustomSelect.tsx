@@ -73,7 +73,7 @@ function CustomSelect({
             value={value}
             disabled={disabled}
         >
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
