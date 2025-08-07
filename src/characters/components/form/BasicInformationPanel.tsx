@@ -1,8 +1,8 @@
 import { CharacterNameInput } from "@characters/components/form/CharacterNameInput"
 import { CharacterSelectsGrid } from "@characters/components/form/CharacterSelectsGrid"
 import { CharacterAvatarUpload } from "@characters/components/form/CharacterAvatarUpload"
-// import { LevelExperienceInputs } from "./LevelExperienceInputs"
-import { CompleteCharacterFormType } from "@/lib/validations/character"
+import { LevelExperienceInputs } from "./LevelExperienceInputs"
+import { CompleteCharacterFormType } from "@characters/types/character"
 import { UseFormReturn } from "react-hook-form"
 
 export function BasicInformationPanel({ form }: { form: UseFormReturn<CompleteCharacterFormType> }) {
@@ -14,13 +14,7 @@ export function BasicInformationPanel({ form }: { form: UseFormReturn<CompleteCh
 
           <CharacterSelectsGrid form={form} />
 
-          {/* Nivel y Experiencia - Comentado hasta implementar */}
-          {/* <LevelExperienceInputs 
-            level={level}
-            experience={experience}
-            onLevelChange={setLevel}
-            onExperienceChange={setExperience}
-          /> */}
+          {/* <LevelExperienceInputs form={form} /> */}
         </div>
 
         <CharacterAvatarUpload form={form} />
