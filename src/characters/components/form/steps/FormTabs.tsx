@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/
 import { FORM_STEPS } from "@characters/utils/formSteps"
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
-import { completeCharacterSchema } from "@/lib/validations/character"
+import { completeCharacterSchema } from "@characters/types/character"
 
 interface FormTabsProps {
     currentStep: number
@@ -32,7 +32,7 @@ export function FormTabs({ currentStep, onStepChange, form }: FormTabsProps) {
                     <TabsTrigger
                         key={step.id}
                         value={step.id.toString()}
-                        className="text-xs md:text-sm"
+                        className="text-xs md:text-sm cursor-pointer"
                     >
                         {step.title}
                     </TabsTrigger>
