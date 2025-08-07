@@ -2,7 +2,7 @@
 
 import { Input } from "@shared/components/ui/input"
 import { FormControl, FormField, FormLabel, FormItem, FormMessage } from "@shared/components/ui/form"
-import { CompleteCharacterFormType } from "@/lib/validations/character"
+import { CompleteCharacterFormType } from "@characters/types/character"
 import { Control } from "react-hook-form"
 
 export function CharacterNameInput({ control }: { control: Control<CompleteCharacterFormType> }) {

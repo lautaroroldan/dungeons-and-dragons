@@ -1,54 +1,64 @@
 "use client"
 
-import { SelectForm } from "@characters/components/form/SelectForm"
-import { CompleteCharacterFormType, completeCharacterSchema } from "@/lib/validations/character"
+
+import { CompleteCharacterFormType, completeCharacterSchema } from "@characters/types/character"
 import { z } from "zod"
 import { UseFormReturn } from "react-hook-form"
 import { getApiRaces, getApiClasses, getApiBackgrounds, getApiAlignments } from "@shared/utils/utils"
-import { BasicTable } from "@/db/schema"
+import useSWR from "swr"
+import { FormControl, FormMessage, FormItem, FormField, FormLabel } from "@/src/shared/components/ui/form"
+import SWRSelect from "@/src/shared/components/ui/custom-select/SWRSelect"
 
 interface SelectConfig {
-    id: string
+    id: keyof z.infer<typeof completeCharacterSchema>
     label: string
-    url: () => Promise<BasicTable[]>
 }
 
 const selectConfigs: SelectConfig[] = [
-    { label: "Raza", id: "race", url: getApiRaces },
-    { label: "Clase", id: "class", url: getApiClasses },
-    { label: "Trasfondo", id: "background", url: getApiBackgrounds },
-    { label: "Alineamiento", id: "alignment", url: getApiAlignments }
+    { label: "Raza", id: "race", },
+    { label: "Clase", id: "class", },
+    { label: "Trasfondo", id: "background", },
+    { label: "Alineamiento", id: "alignment", }
 ]
 
 export function CharacterSelectsGrid({ form }: { form: UseFormReturn<CompleteCharacterFormType> }) {
 
+    const racesQuery = useSWR('/api/races', getApiRaces)
+    const classesQuery = useSWR('/api/classes', getApiClasses)
+    const backgroundsQuery = useSWR('/api/backgrounds', getApiBackgrounds)
+    const alignmentsQuery = useSWR('/api/alignments', getApiAlignments)
+
+    const queriesById = {
+        race: racesQuery,
+        class: classesQuery,
+        background: backgroundsQuery,
+        alignment: alignmentsQuery
+    }
 
     return (
         <div className="space-y-4">
-            {/* Raza y Clase */}
             <div className="grid grid-cols-2 gap-4">
-                {selectConfigs.slice(0, 2).map((config) => (
-                    <SelectForm
-                        key={config.id}
-                        label={config.label}
-                        name={config.id as keyof z.infer<typeof completeCharacterSchema>}
-                        fetcher={config.url}
-                        fetchKey={`api/${config.id}`}
-                        form={form}
-                    />
-                ))}
-            </div>
-
-            {/* Trasfondo y Alineamiento */}
-            <div className="grid grid-cols-2 gap-4">
-                {selectConfigs.slice(2, 4).map((config) => (
-                    <SelectForm
-                        key={config.id}
-                        label={config.label}
-                        name={config.id as keyof z.infer<typeof completeCharacterSchema>}
-                        fetcher={config.url}
-                        fetchKey={`api/${config.id}`}
-                        form={form}
+                {selectConfigs.map(({ id, label }) => (
+                    <FormField
+                        key={id}
+                        control={form.control}
+                        name={id}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{label}</FormLabel>
+                                <FormControl>
+                                    <SWRSelect
+                                        query={queriesById[id as keyof typeof queriesById]}
+                                        valueKey="id"
+                                        labelKey="name"
+                                        value={field.value as string}
+                                        onValueChange={field.onChange}
+                                        placeholder={`Selecciona ${label.toLowerCase()}`}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
                 ))}
             </div>

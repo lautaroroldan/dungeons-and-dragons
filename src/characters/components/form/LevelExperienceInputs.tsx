@@ -1,54 +1,65 @@
 "use client"
 
-import { Label } from "@shared/components/ui/label"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@shared/components/ui/form"
 import { Input } from "@shared/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select"
-// import { useCharacterStore } from "@/app/stores/useCharacterStore"
+import { CompleteCharacterFormType } from "@characters/types/character"
+import { UseFormReturn } from "react-hook-form"
 
 interface LevelExperienceInputsProps {
-    level: number
-    experience: number
-    onLevelChange: (level: number) => void
-    onExperienceChange: (experience: number) => void
+    form: UseFormReturn<CompleteCharacterFormType>
 }
 
-export function LevelExperienceInputs({
-    level,
-    experience,
-    onLevelChange,
-    onExperienceChange
-}: LevelExperienceInputsProps) {
+export function LevelExperienceInputs({ form }: LevelExperienceInputsProps) {
     return (
         <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-                <Label htmlFor="nivel">Nivel</Label>
-                <Select
-                    value={level.toString()}
-                    onValueChange={(value) => onLevelChange(Number.parseInt(value))}
-                >
-                    <SelectTrigger id="level">
-                        <SelectValue placeholder="Selecciona un nivel" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {Array.from({ length: 20 }, (_, i) => i + 1).map((nivel) => (
-                            <SelectItem key={nivel} value={nivel.toString()}>
-                                {nivel}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+            <FormField
+                control={form.control}
+                name="level"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Nivel</FormLabel>
+                        <Select 
+                            value={field.value?.toString() || "1"} 
+                            onValueChange={(value) => field.onChange(Number.parseInt(value))}
+                        >
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecciona un nivel" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {Array.from({ length: 20 }, (_, i) => i + 1).map((nivel) => (
+                                    <SelectItem key={nivel} value={nivel.toString()}>
+                                        Nivel {nivel}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
 
-            <div className="space-y-2">
-                <Label htmlFor="experiencia">Experiencia</Label>
-                <Input
-                    id="experience"
-                    type="number"
-                    value={experience}
-                    onChange={(e) => onExperienceChange(Number.parseInt(e.target.value) || 0)}
-                    placeholder="0"
-                />
-            </div>
+            <FormField
+                control={form.control}
+                name="experience"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Experiencia</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="0"
+                                {...field}
+                                value={field.value || 0}
+                                onChange={(e) => field.onChange(Number.parseInt(e.target.value) || 0)}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
         </div>
     )
 }
